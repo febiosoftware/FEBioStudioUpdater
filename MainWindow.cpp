@@ -29,12 +29,13 @@
 
 #ifdef WIN32
 	#define URL_BASE "/update/FEBioStudio/Windows"
-	#else
-		#ifdef LINUX
-			#define URL_BASE "/update/FEBioStudio/Linux"
-		#else
-			#define URL_BASE "/update/FEBioStudio/macOS"
-	#endif
+	#define REL_ROOT "/../"
+#elif __APPLE__
+	#define URL_BASE "/update/FEBioStudio/macOS"
+	#define REL_ROOT "/../../../"
+#else
+	#define URL_BASE "/update/FEBioStudio/Linux"
+	#define REL_ROOT "/../"
 #endif
 
 namespace Ui
@@ -183,10 +184,23 @@ CMainWindow::CMainWindow() : ui(new Ui::CMainWindow), restclient(new QNetworkAcc
 	QString dir = QApplication::applicationDirPath();
 	bool correctDir = false;
 
+#ifdef WIN32
 	if(dir.contains("FEBio") && dir.contains("Studio") && dir.contains("bin"))
 	{
 		correctDir = true;
 	}
+#elif __APPLE__
+	if(dir.contains("FEBio") && dir.contains("Studio") && dir.contains("MacOS"))
+	{
+		correctDir = true;
+	}
+#else
+	if(dir.contains("FEBio") && dir.contains("Studio") && dir.contains("bin"))
+	{
+		correctDir = true;
+	}
+#endif
+	
 
 	ui->setup(this, correctDir);
 
@@ -230,7 +244,7 @@ void CMainWindow::checkForUpdateResponse(QNetworkReply *r)
 		qint64 modified = file.toArray()[1].toInt();
 		qint64 size = file.toArray()[2].toString().toLongLong();
 
-		QFileInfo info = QFileInfo(QApplication::applicationDirPath() + QString("/../") + name);
+		QFileInfo info = QFileInfo(QApplication::applicationDirPath() + QString(REL_ROOT) + name);
 
 		if(info.exists())
 		{
@@ -279,7 +293,7 @@ void CMainWindow::getFileReponse(QNetworkReply *r)
 {
 	QByteArray data = r->readAll();
 
-	QString fileName = QApplication::applicationDirPath() + QString("/../") + ui->updateFiles[ui->currentIndex];
+	QString fileName = QApplication::applicationDirPath() + QString(REL_ROOT) + ui->updateFiles[ui->currentIndex];
 
 	QDir dir;
 	dir.mkpath(QFileInfo(fileName).path());
