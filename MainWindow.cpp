@@ -172,6 +172,8 @@ public:
 public:
 	::CMainWindow* m_wnd;
 	QStringList updateFiles;
+	QStringList newFiles;
+	QStringList newDirs;
 	int currentIndex;
 	qint64 overallSize;
 	qint64 downloadedSize;
@@ -282,7 +284,8 @@ void CMainWindow::getFileReponse(QNetworkReply *r)
 	QString fileName = QApplication::applicationDirPath() + QString("/../") + ui->updateFiles[ui->currentIndex];
 
 	QDir dir;
-	dir.mkpath(QFileInfo(fileName).path());
+	makePath(dir.fromNativeSeparators(fileName));
+//	dir.mkpath(QFileInfo(fileName).path());
 
 	QSaveFile file(fileName);
 	file.open(QIODevice::WriteOnly);
@@ -353,7 +356,23 @@ void CMainWindow::progress(qint64 bytesReceived, qint64 bytesTotal)
 }
 
 
+void CMainWindow::makePath(QString path)
+{
+	QDir dir(path);
 
+	if(dir.exists())
+	{
+		return;
+	}
+
+	QString parentPath = path.left(path.lastIndexOf("/"));
+
+	makePath(parentPath);
+
+	dir.mkdir(dir.absolutePath());
+
+	ui->newDirs.append(dir.absolutePath());
+}
 
 
 

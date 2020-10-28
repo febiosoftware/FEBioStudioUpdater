@@ -29,5 +29,6 @@ SOFTWARE.*/
 class CMainWindow;
 class CDocument;
 
+void uninstall();
 CMainWindow* getMainWindow();
 

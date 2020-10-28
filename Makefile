@@ -17,7 +17,7 @@ CXX           = g++
 DEFINES       = -DLINUX -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WEBENGINEWIDGETS_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_WEBENGINECORE_LIB -DQT_QUICK_LIB -DQT_GUI_LIB -DQT_QMLMODELS_LIB -DQT_WEBCHANNEL_LIB -DQT_QML_LIB -DQT_NETWORK_LIB -DQT_POSITIONING_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -w -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -std=c++14 -O0 -g -std=gnu++1y -w -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I. -isystem /usr/include/libdrm -I../../Resources/Qt/5.14.1/gcc_64/include -I../../Resources/Qt/5.14.1/gcc_64/include/QtOpenGL -I../../Resources/Qt/5.14.1/gcc_64/include/QtCharts -I../../Resources/Qt/5.14.1/gcc_64/include/QtWebEngineWidgets -I../../Resources/Qt/5.14.1/gcc_64/include/QtPrintSupport -I../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets -I../../Resources/Qt/5.14.1/gcc_64/include/QtWebEngineCore -I../../Resources/Qt/5.14.1/gcc_64/include/QtQuick -I../../Resources/Qt/5.14.1/gcc_64/include/QtGui -I../../Resources/Qt/5.14.1/gcc_64/include/QtQmlModels -I../../Resources/Qt/5.14.1/gcc_64/include/QtWebChannel -I../../Resources/Qt/5.14.1/gcc_64/include/QtQml -I../../Resources/Qt/5.14.1/gcc_64/include/QtNetwork -I../../Resources/Qt/5.14.1/gcc_64/include/QtPositioning -I../../Resources/Qt/5.14.1/gcc_64/include/QtCore -I. -I../../Resources/Qt/5.14.1/gcc_64/mkspecs/linux-g++
+INCPATH       = -I. -I. -I../FEBioStudio -isystem /usr/include/libdrm -I../../Resources/Qt/5.14.1/gcc_64/include -I../../Resources/Qt/5.14.1/gcc_64/include/QtOpenGL -I../../Resources/Qt/5.14.1/gcc_64/include/QtCharts -I../../Resources/Qt/5.14.1/gcc_64/include/QtWebEngineWidgets -I../../Resources/Qt/5.14.1/gcc_64/include/QtPrintSupport -I../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets -I../../Resources/Qt/5.14.1/gcc_64/include/QtWebEngineCore -I../../Resources/Qt/5.14.1/gcc_64/include/QtQuick -I../../Resources/Qt/5.14.1/gcc_64/include/QtGui -I../../Resources/Qt/5.14.1/gcc_64/include/QtQmlModels -I../../Resources/Qt/5.14.1/gcc_64/include/QtWebChannel -I../../Resources/Qt/5.14.1/gcc_64/include/QtQml -I../../Resources/Qt/5.14.1/gcc_64/include/QtNetwork -I../../Resources/Qt/5.14.1/gcc_64/include/QtPositioning -I../../Resources/Qt/5.14.1/gcc_64/include/QtCore -I. -I../../Resources/Qt/5.14.1/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/mherron/Resources/Qt/5.14.1/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = FEBioStudioUpdater1.0.0
 DISTDIR = /home/mherron/Projects/FEBioStudioUpdater/.tmp/FEBioStudioUpdater1.0.0
 LINK          = g++
 LFLAGS        = -static-libstdc++ -static-libgcc -Wl,-rpath,\$$ORIGIN/../lib -Wl,-rpath,/home/mherron/Resources/Qt/5.14.1/gcc_64/lib -Wl,-rpath-link,/home/mherron/Resources/Qt/5.14.1/gcc_64/lib
-LIBS          = $(SUBLIBS) -L/home/mherron/Resources/Qt/5.13.2/gcc_64/lib -L/usr/local/lib -Wl,--start-group -L/usr/lib64 -lGL /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5OpenGL.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Charts.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5WebEngineWidgets.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5PrintSupport.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Widgets.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5WebEngineCore.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Quick.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Gui.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5QmlModels.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5WebChannel.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Qml.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Network.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Positioning.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Core.so -lpthread   
+LIBS          = $(SUBLIBS) -L/home/mherron/Projects/FEBioStudio/build/lib -Wl,--start-group -lmathlib -lfscore -lxml -Wl,--end-group -lGL /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5OpenGL.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Charts.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5WebEngineWidgets.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5PrintSupport.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Widgets.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5WebEngineCore.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Quick.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Gui.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5QmlModels.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5WebChannel.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Qml.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Network.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Positioning.so /home/mherron/Resources/Qt/5.14.1/gcc_64/lib/libQt5Core.so -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -809,7 +809,7 @@ moc_MainWindow.cpp: MainWindow.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qtouchdevice.h \
 		moc_predefs.h \
 		../../Resources/Qt/5.14.1/gcc_64/bin/moc
-	/home/mherron/Resources/Qt/5.14.1/gcc_64/bin/moc $(DEFINES) --include /home/mherron/Projects/FEBioStudioUpdater/moc_predefs.h -I/home/mherron/Resources/Qt/5.14.1/gcc_64/mkspecs/linux-g++ -I/home/mherron/Projects/FEBioStudioUpdater -I/home/mherron/Projects/FEBioStudioUpdater -I/usr/include/libdrm -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtOpenGL -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtCharts -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtWebEngineWidgets -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtPrintSupport -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtWidgets -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtWebEngineCore -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtQuick -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtGui -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtQmlModels -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtWebChannel -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtQml -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtNetwork -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtPositioning -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include MainWindow.h -o moc_MainWindow.cpp
+	/home/mherron/Resources/Qt/5.14.1/gcc_64/bin/moc $(DEFINES) --include /home/mherron/Projects/FEBioStudioUpdater/moc_predefs.h -I/home/mherron/Resources/Qt/5.14.1/gcc_64/mkspecs/linux-g++ -I/home/mherron/Projects/FEBioStudioUpdater -I/home/mherron/Projects/FEBioStudioUpdater -I/home/mherron/Projects/FEBioStudio -I/usr/include/libdrm -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtOpenGL -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtCharts -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtWebEngineWidgets -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtPrintSupport -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtWidgets -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtWebEngineCore -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtQuick -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtGui -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtQmlModels -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtWebChannel -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtQml -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtNetwork -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtPositioning -I/home/mherron/Resources/Qt/5.14.1/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include MainWindow.h -o moc_MainWindow.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -939,10 +939,12 @@ FEBioStudioUpdater.o: FEBioStudioUpdater.cpp ../../Resources/Qt/5.14.1/gcc_64/in
 		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qinputmethod.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/QIcon \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qicon.h \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QString \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QFileInfo \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/qfileinfo.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QFileDialog \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qfiledialog.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/qdir.h \
-		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/qfileinfo.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qdialog.h \
 		MainWindow.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QWizard \
@@ -950,7 +952,14 @@ FEBioStudioUpdater.o: FEBioStudioUpdater.cpp ../../Resources/Qt/5.14.1/gcc_64/in
 		FEBioStudioUpdater.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QSplashScreen \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qsplashscreen.h \
-		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QDebug
+		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QDebug \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QFile \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QDir \
+		../FEBioStudio/XML/XMLReader.h \
+		../FEBioStudio/MathLib/math3d.h \
+		../FEBioStudio/MathLib/mat3d.h \
+		../FEBioStudio/MathLib/mat3d.hpp \
+		../FEBioStudio/FSCore/color.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o FEBioStudioUpdater.o FEBioStudioUpdater.cpp
 
 MainWindow.o: MainWindow.cpp ../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QApplication \

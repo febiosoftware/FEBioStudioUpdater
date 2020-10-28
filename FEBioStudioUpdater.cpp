@@ -26,33 +26,119 @@ SOFTWARE.*/
 
 #include <QApplication>
 #include <QIcon>
+#include <QString>
+#include <QFileInfo>
 #include <QFileDialog>
 #include "MainWindow.h"
 #include <FEBioStudioUpdater.h>
 #include <stdio.h>
 #include <QSplashScreen>
 #include <QDebug>
+#include <QFile>
+#include <QDir>
 #include <string.h>
+#include <XML/XMLReader.h>
+
+void makePath(QString path)
+{
+	QDir dir(path);
+
+	if(dir.exists())
+	{
+		return;
+	}
+
+	QString parentPath = path.left(path.lastIndexOf("/"));
+
+	makePath(parentPath);
+
+
+
+	qDebug() << dir.absolutePath();
+	qDebug() << dir.mkdir(dir.absolutePath());
+	qDebug() << path;
+}
 
 // starting point of application
 int main(int argc, char* argv[])
 {
-	QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	QString temp = QString("./../Test/Test2/Test3/Test4");
 
-	// create the application object
-	QApplication app(argc, argv);
+	qDebug() << temp << endl;
 
-	// set the display name (this will be displayed on all windows and dialogs)
-	app.setApplicationVersion("1.0.0");
-	app.setApplicationName("FEBio Studio Updater");
-	app.setApplicationDisplayName("FEBio Studio Updater");
-	app.setWindowIcon(QIcon(":/icons/FEBioStudio.png"));
+	makePath(temp);
 
-	// create the main window
-	CMainWindow wnd;
-	wnd.show();
+//	if(argc > 1 && QString(argv[1]) == QString("--uninstall"))
+//	{
+//		uninstall();
+//	}
+//	else
+//	{
+//		QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//
+//		// create the application object
+//		QApplication app(argc, argv);
+//
+//		// set the display name (this will be displayed on all windows and dialogs)
+//		app.setApplicationVersion("1.0.0");
+//		app.setApplicationName("FEBio Studio Updater");
+//		app.setApplicationDisplayName("FEBio Studio Updater");
+//		app.setWindowIcon(QIcon(":/icons/FEBioStudio.png"));
+//
+//		// create the main window
+//		CMainWindow wnd;
+//		wnd.show();
+//
+//		return app.exec();
+//	}
+}
 
-	return app.exec();
+
+
+void uninstall()
+{
+	if(QFileInfo::exists("autoUpdate.xml"))
+	{
+		QStringList files;
+		QStringList dirs;
+
+		XMLReader reader;
+		if(reader.Open("autoUpdate.xml") == false) return;
+
+		XMLTag tag;
+		if(reader.FindTag("autoUpdate", tag) == false) return;
+
+		++tag;
+		do
+		{
+			if(tag == "file")
+			{
+				files.append(tag.m_szval);
+			}
+
+			if(tag == "dir")
+			{
+				files.append(tag.m_szval);
+			}
+
+		}
+		while(!tag.isend());
+
+		reader.Close();
+
+		files.append("autoUpdate.xml");
+
+		for(auto file : files)
+		{
+			QFile::remove(file);
+		}
+
+		QDir temp;
+		for(auto dir : dirs)
+		{
+			temp.remove(dir);
+		}
+	}
 }
 
 CMainWindow* getMainWindow()

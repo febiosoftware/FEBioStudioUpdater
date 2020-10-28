@@ -32,6 +32,8 @@ private:
 	void checkForUpdateResponse(QNetworkReply *r);
 	void getFileReponse(QNetworkReply *r);
 
+	void makePath(QString path);
+
 
 
 private:
