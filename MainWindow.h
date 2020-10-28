@@ -27,12 +27,14 @@ private:
 	bool NetworkAccessibleCheck();
 
 	void checkForUpdate();
+	void deleteFiles();
 	void getFile();
 
 	void checkForUpdateResponse(QNetworkReply *r);
 	void getFileReponse(QNetworkReply *r);
 
 	void makePath(QString path);
+	void downloadsFinished();
 
 
 

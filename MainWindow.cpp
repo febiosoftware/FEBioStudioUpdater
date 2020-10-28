@@ -2,6 +2,7 @@
 #include <QWizardPage>
 #include <QLabel>
 #include <QAbstractButton>
+#include <QMessageBox>
 #include <QListWidget>
 #include <QBoxLayout>
 #include <QNetworkAccessManager>
@@ -20,6 +21,8 @@
 #include <QLocale>
 
 #include "MainWindow.h"
+#include "FEBioStudioUpdater.h"
+#include <XML/XMLWriter.h>
 
 #include <iostream>
 
@@ -173,6 +176,7 @@ public:
 public:
 	::CMainWindow* m_wnd;
 	QStringList updateFiles;
+	QStringList deleteFiles;
 	QStringList newFiles;
 	QStringList newDirs;
 	int currentIndex;
@@ -237,8 +241,26 @@ void CMainWindow::checkForUpdate()
 
 void CMainWindow::checkForUpdateResponse(QNetworkReply *r)
 {
+	int statusCode = r->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+	if(statusCode != 200)
+	{
+		QMessageBox::critical(this, "Update Failed", "Update Failed!\n\nUnable to recieve response from server.");
+		QApplication::quit();
+	}
+
 	QJsonDocument jsonDoc = QJsonDocument::fromJson(r->readAll());
-	QJsonArray files = jsonDoc.array();
+	QJsonObject jsonObject = jsonDoc.object();
+
+
+	QJsonArray deleteList = jsonObject["delete"].toArray();
+
+	for(auto file : deleteList)
+	{
+		ui->deleteFiles.append(QApplication::applicationDirPath() + QString(REL_ROOT) + file.toString());
+	}
+
+	QJsonArray files = jsonObject["update"].toArray();
 
 	for(auto file : files)
 	{
@@ -246,7 +268,7 @@ void CMainWindow::checkForUpdateResponse(QNetworkReply *r)
 		qint64 modified = file.toArray()[1].toInt();
 		qint64 size = file.toArray()[2].toString().toLongLong();
 
-		QFileInfo info = QFileInfo(QApplication::applicationDirPath() + QString(REL_ROOT) + name);
+		QFileInfo info(QApplication::applicationDirPath() + QString(REL_ROOT) + name);
 
 		if(info.exists())
 		{
@@ -260,12 +282,22 @@ void CMainWindow::checkForUpdateResponse(QNetworkReply *r)
 		{
 			ui->updateFiles.append(name);
 			ui->overallSize += size;
+
+			ui->newFiles.append(info.absoluteFilePath());
 		}
 	}
 
 	ui->files->addItems(ui->updateFiles);
 
 	ui->setUpFilesPage();
+}
+
+void CMainWindow::deleteFiles()
+{
+	for(auto file : ui->deleteFiles)
+	{
+		QFile::remove((file));
+	}
 }
 
 void CMainWindow::getFile()
@@ -293,13 +325,20 @@ void CMainWindow::getFile()
 
 void CMainWindow::getFileReponse(QNetworkReply *r)
 {
+	int statusCode = r->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+	if(statusCode != 200)
+	{
+		QMessageBox::critical(this, "Update Failed", QString("Update Failed!\n\nUnable to download %1.").arg(ui->updateFiles[ui->currentIndex]));
+		QApplication::quit();
+	}
+
 	QByteArray data = r->readAll();
 
 	QString fileName = QApplication::applicationDirPath() + QString(REL_ROOT) + ui->updateFiles[ui->currentIndex];
 
-	QDir dir;
-	makePath(dir.fromNativeSeparators(fileName));
-//	dir.mkpath(QFileInfo(fileName).path());
+	QFileInfo info(fileName);
+	makePath(QDir::fromNativeSeparators(info.absolutePath()));
 
 	QSaveFile file(fileName);
 	file.open(QIODevice::WriteOnly);
@@ -320,7 +359,7 @@ void CMainWindow::getFileReponse(QNetworkReply *r)
 	}
 	else
 	{
-		ui->downloadsFinished();
+		downloadsFinished();
 	}
 }
 
@@ -332,6 +371,7 @@ void CMainWindow::initializePage(int id)
 		checkForUpdate();
 		break;
 	case 2:
+		deleteFiles();
 		getFile();
 		break;
 	default:
@@ -341,7 +381,7 @@ void CMainWindow::initializePage(int id)
 
 void CMainWindow::connFinished(QNetworkReply *r)
 {
-	if(r->hasRawHeader("Content-Type") && r->rawHeader("Content-Type") == QString("application/json"))
+	if(r->request().url().path() == URL_BASE)
 	{
 		checkForUpdateResponse(r);
 	}
@@ -388,7 +428,45 @@ void CMainWindow::makePath(QString path)
 	ui->newDirs.append(dir.absolutePath());
 }
 
+void CMainWindow::downloadsFinished()
+{
+	QStringList oldFiles;
+	QStringList oldDirs;
 
+	readXML(oldFiles, oldDirs);
+
+	XMLWriter writer;
+	writer.open("autoUpdate.xml");
+
+	XMLElement root("autoUpdate");
+	writer.add_branch(root);
+
+	for(auto dir : oldDirs)
+	{
+		writer.add_leaf("dir", dir.toStdString().c_str());
+	}
+
+	for(auto dir : ui->newDirs)
+	{
+		writer.add_leaf("dir", dir.toStdString().c_str());
+	}
+
+	for(auto file : oldFiles)
+	{
+		writer.add_leaf("file", file.toStdString().c_str());
+	}
+
+	for(auto file : ui->newFiles)
+	{
+		writer.add_leaf("file", file.toStdString().c_str());
+	}
+
+	writer.close_branch();
+
+	writer.close();
+
+	ui->downloadsFinished();
+}
 
 
 

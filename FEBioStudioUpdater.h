@@ -28,7 +28,9 @@ SOFTWARE.*/
 
 class CMainWindow;
 class CDocument;
+class QStringList;
 
+void readXML(QStringList& files, QStringList& dirs);
 void uninstall();
 CMainWindow* getMainWindow();
 

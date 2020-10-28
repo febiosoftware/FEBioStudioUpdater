@@ -39,61 +39,67 @@ SOFTWARE.*/
 #include <string.h>
 #include <XML/XMLReader.h>
 
-void makePath(QString path)
-{
-	QDir dir(path);
-
-	if(dir.exists())
-	{
-		return;
-	}
-
-	QString parentPath = path.left(path.lastIndexOf("/"));
-
-	makePath(parentPath);
-
-
-
-	qDebug() << dir.absolutePath();
-	qDebug() << dir.mkdir(dir.absolutePath());
-	qDebug() << path;
-}
-
 // starting point of application
 int main(int argc, char* argv[])
 {
-	QString temp = QString("./../Test/Test2/Test3/Test4");
+	if(argc > 1 && QString(argv[1]) == QString("--uninstall"))
+	{
+		uninstall();
+	}
+	else
+	{
+		QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-	qDebug() << temp << endl;
+		// create the application object
+		QApplication app(argc, argv);
 
-	makePath(temp);
+		// set the display name (this will be displayed on all windows and dialogs)
+		app.setApplicationVersion("1.0.0");
+		app.setApplicationName("FEBio Studio Updater");
+		app.setApplicationDisplayName("FEBio Studio Updater");
+		app.setWindowIcon(QIcon(":/icons/FEBioStudio.png"));
 
-//	if(argc > 1 && QString(argv[1]) == QString("--uninstall"))
-//	{
-//		uninstall();
-//	}
-//	else
-//	{
-//		QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-//
-//		// create the application object
-//		QApplication app(argc, argv);
-//
-//		// set the display name (this will be displayed on all windows and dialogs)
-//		app.setApplicationVersion("1.0.0");
-//		app.setApplicationName("FEBio Studio Updater");
-//		app.setApplicationDisplayName("FEBio Studio Updater");
-//		app.setWindowIcon(QIcon(":/icons/FEBioStudio.png"));
-//
-//		// create the main window
-//		CMainWindow wnd;
-//		wnd.show();
-//
-//		return app.exec();
-//	}
+		// create the main window
+		CMainWindow wnd;
+		wnd.show();
+
+		return app.exec();
+	}
 }
 
+void readXML(QStringList& files, QStringList& dirs)
+{
+	XMLReader reader;
+	if(reader.Open("autoUpdate.xml") == false) return;
 
+	XMLTag tag;
+	if(reader.FindTag("autoUpdate", tag) == false) return;
+
+	++tag;
+	try{
+		do
+		{
+			if(tag == "file")
+			{
+				files.append(tag.m_szval);
+			}
+			else if(tag == "dir")
+			{
+				dirs.append(tag.m_szval);
+			}
+
+			++tag;
+
+		}
+		while(!tag.isend());
+	}
+	catch (XMLReader::EndOfFile& e)
+	{
+		//ignore
+	}
+
+	reader.Close();
+}
 
 void uninstall()
 {
@@ -102,29 +108,7 @@ void uninstall()
 		QStringList files;
 		QStringList dirs;
 
-		XMLReader reader;
-		if(reader.Open("autoUpdate.xml") == false) return;
-
-		XMLTag tag;
-		if(reader.FindTag("autoUpdate", tag) == false) return;
-
-		++tag;
-		do
-		{
-			if(tag == "file")
-			{
-				files.append(tag.m_szval);
-			}
-
-			if(tag == "dir")
-			{
-				files.append(tag.m_szval);
-			}
-
-		}
-		while(!tag.isend());
-
-		reader.Close();
+		readXML(files, dirs);
 
 		files.append("autoUpdate.xml");
 
@@ -133,10 +117,11 @@ void uninstall()
 			QFile::remove(file);
 		}
 
-		QDir temp;
+
 		for(auto dir : dirs)
 		{
-			temp.remove(dir);
+			QDir temp(dir);
+			temp.removeRecursively();
 		}
 	}
 }

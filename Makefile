@@ -1081,6 +1081,8 @@ MainWindow.o: MainWindow.cpp ../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QAbstractButton \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qabstractbutton.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qicon.h \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QMessageBox \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qmessagebox.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QListWidget \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qlistwidget.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qlistview.h \
@@ -1153,7 +1155,13 @@ MainWindow.o: MainWindow.cpp ../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/
 		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QDebug \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QLocale \
 		MainWindow.h \
-		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QWizard
+		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QWizard \
+		FEBioStudioUpdater.h \
+		../FEBioStudio/XML/XMLWriter.h \
+		../FEBioStudio/MathLib/math3d.h \
+		../FEBioStudio/MathLib/mat3d.h \
+		../FEBioStudio/MathLib/mat3d.hpp \
+		../FEBioStudio/FSCore/color.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o MainWindow.cpp
 
 moc_MainWindow.o: moc_MainWindow.cpp 
