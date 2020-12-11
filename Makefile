@@ -1072,9 +1072,12 @@ MainWindow.o: MainWindow.cpp ../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/
 		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qtouchdevice.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qguiapplication.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qinputmethod.h \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QDialog \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qdialog.h \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QDialogButtonBox \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QWizardPage \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qwizard.h \
-		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qdialog.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QLabel \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qlabel.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qframe.h \
@@ -1101,6 +1104,13 @@ MainWindow.o: MainWindow.cpp ../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qtabbar.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qtabwidget.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qrubberband.h \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QTextEdit \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qtextdocument.h \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qtextoption.h \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qtextcursor.h \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qtextformat.h \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtGui/qpen.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QBoxLayout \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qboxlayout.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/qlayout.h \
@@ -1154,6 +1164,8 @@ MainWindow.o: MainWindow.cpp ../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/
 		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/qsavefile.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QDebug \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QLocale \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/QXmlStreamReader \
+		../../Resources/Qt/5.14.1/gcc_64/include/QtCore/qxmlstream.h \
 		MainWindow.h \
 		../../Resources/Qt/5.14.1/gcc_64/include/QtWidgets/QWizard \
 		FEBioStudioUpdater.h \
