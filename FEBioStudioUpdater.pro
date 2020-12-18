@@ -15,10 +15,10 @@ QMAKE_LFLAGS += -static-libstdc++ -static-libgcc
 QMAKE_RPATHDIR += $ORIGIN/../lib
 #QMAKE_LFLAGS += '-Wl,-rpath,\'\$$ORIGIN/../lib/\',-z,origin'
 
-LIBS += -L/home/mherron/Projects/FEBioStudio/build/lib
+LIBS += -L/home/mherron/Projects/FEBioStudio/build/Release/lib
 LIBS += -Wl,--start-group
 
-LIBS += -lmathlib -lfscore -lxml
+LIBS += -lMathLib -lFSCore -lXML
 
 LIBS += -Wl,--end-group
 

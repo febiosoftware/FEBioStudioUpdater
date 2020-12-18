@@ -1,3 +1,4 @@
+#include <vector>
 #include <QApplication>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -23,44 +24,12 @@
 #include <QDebug>
 #include <QLocale>
 #include <QXmlStreamReader>
-
-#include "MainWindow.h"
 #include "FEBioStudioUpdater.h"
+#include "MainWindow.h"
 #include <XML/XMLWriter.h>
+#include <FEBioStudio/UpdateChecker.h>
 
 #include <iostream>
-
-//#define UPDATE_URL "repo.febio.org"
-//#define PORT 4433
-//#define SCHEME "https"
-
-#define UPDATE_URL "localhost"
-#define PORT 5236
-#define SCHEME "http"
-
-#ifdef WIN32
-	#define URL_BASE "/update/FEBioStudio/Windows"
-	#define REL_ROOT "/../"
-#elif __APPLE__
-	#define URL_BASE "/update/FEBioStudio/macOS"
-	#define REL_ROOT "/../../../"
-#else
-	#define URL_BASE "/update/FEBioStudio/Linux"
-	#define REL_ROOT "/../"
-#endif
-
-struct Release
-{
-	bool active;
-	qint64 timestamp;
-	QString FEBioVersion;
-	QString FBSVersion;
-	QString FEBioNotes;
-	QString FBSNotes;
-	QStringList files;
-	QStringList deleteFiles;
-};
-
 
 namespace Ui
 {
@@ -100,7 +69,8 @@ public:
 
 	MyWizardPage* infoPage;
 	QVBoxLayout* infoLayout;
-	QLabel* infoLabel;
+	::CUpdateWidget* updateWidget;
+	// QLabel* infoLabel;
 
 	MyWizardPage* downloadPage;
 	QLabel* downloadOverallLabel;
@@ -135,8 +105,7 @@ public:
 			infoPage = new MyWizardPage;
 			infoLayout = new QVBoxLayout;
 
-			infoLayout->addWidget(infoLabel = new QLabel("Checking for updates..."));
-
+			infoLayout->addWidget(updateWidget = new ::CUpdateWidget);
 
 			infoPage->setLayout(infoLayout);
 
@@ -156,86 +125,7 @@ public:
 			wnd->addPage(downloadPage);
 		}
 
-		currentIndex = 0;
-		overallSize = 0;
-		downloadedSize = 0;
-	}
-
-	void showUpdateInfo()
-	{
-		// Find last installed update
-		int lastUpdateIndex;
-		for(lastUpdateIndex = 0; lastUpdateIndex < releases.size(); lastUpdateIndex++)
-		{
-			if(releases[lastUpdateIndex].timestamp <= lastUpdate)
-			{
-				break;
-			}
-		}
-
-		bool newFEBio = false;
-		bool newFBS = false;
-
-		if(lastUpdateIndex == releases.size())
-		{
-			newFEBio = true;
-			newFBS = true;
-		}
-		else
-		{
-			if(releases[0].FEBioVersion != releases[lastUpdateIndex].FEBioVersion) newFEBio = true;
-			if(releases[0].FBSVersion != releases[lastUpdateIndex].FBSVersion) newFBS = true;
-		}
-
-		if(!newFEBio && !newFBS)
-		{
-			infoLabel->setText("This update does not include new versions of FEBio or FEBioStudio.\n\nIt provides updates to FEBio dependencies for added stability.");
-		}
-		else
-		{
-			infoLabel->setText("This update provides: ");
-
-			if(newFEBio)
-			{
-				QLabel* newFEBioLabel = new QLabel(QString("An update to FEBio %1. Click <a href=\"FEBioNotes\">here</a> for release notes.").arg(releases[0].FEBioVersion));
-				newFEBioLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-				QObject::connect(newFEBioLabel, &QLabel::linkActivated, m_wnd, &::CMainWindow::linkActivated);
-
-				infoLayout->addWidget(newFEBioLabel);
-			}
-
-			if(newFBS)
-			{
-				QLabel* newFBSLabel = new QLabel(QString("An update to FEBio Studio %1. Click <a href=\"FBSNotes\">here</a> for release notes.").arg(releases[0].FBSVersion));
-				newFBSLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-				QObject::connect(newFBSLabel, &QLabel::linkActivated, m_wnd, &::CMainWindow::linkActivated);
-
-				infoLayout->addWidget(newFBSLabel);
-			}
-
-			infoLayout->addWidget(new QLabel(QString("The total download size is %1.\nClick "
-					"Next to start the update.\n").arg(m_wnd->locale().formattedDataSize(overallSize))));
-		}
-
-		infoPage->setComplete(true);
-	}
-
-	void showUpToDate()
-	{
-		infoLabel->setText("Software is up to date!");
-
-		m_wnd->removePage(2);
-
-		infoPage->setComplete(true);
-	}
-
-	void showError(const QString& error)
-	{
-		infoLabel->setText(error);
-
-		m_wnd->removePage(2);
-
-		infoPage->setComplete(true);
+		QObject::connect(updateWidget, &::CUpdateWidget::ready, m_wnd, &::CMainWindow::updateWidgetReady);
 	}
 
 	void downloadsFinished()
@@ -251,17 +141,6 @@ public:
 
 public:
 	::CMainWindow* m_wnd;
-	QStringList updateFiles;
-	QStringList deleteFiles;
-	QStringList newFiles;
-	QStringList newDirs;
-	int currentIndex;
-	qint64 overallSize;
-	qint64 downloadedSize;
-
-	vector<Release> releases;
-	qint64 lastUpdate;
-	qint64 serverTime;
 };
 
 
@@ -300,243 +179,16 @@ bool CMainWindow::NetworkAccessibleCheck()
 	return true;
 }
 
-void CMainWindow::checkForUpdate()
-{
-	QUrl myurl;
-	myurl.setScheme(SCHEME);
-	myurl.setHost(UPDATE_URL);
-	myurl.setPort(PORT);
-	myurl.setPath(QString(URL_BASE) + ".xml");
-
-	QNetworkRequest request;
-	request.setUrl(myurl);
-	request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::SameOriginRedirectPolicy);
-
-	if(NetworkAccessibleCheck())
-	{
-		restclient->get(request);
-	}
-}
-
-void CMainWindow::checkForUpdateResponse(QNetworkReply *r)
-{
-	int statusCode = r->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-
-	if(statusCode != 200)
-	{
-		QMessageBox::critical(this, "Update Failed", "Update Failed!\n\nUnable to receive response from server.");
-		QApplication::quit();
-	}
-
-	ui->serverTime = r->rawHeader("serverTime").toLongLong();
-
-	QXmlStreamReader reader(r->readAll());
-
-	if (reader.readNextStartElement())
-	{
-		if(reader.name() == "update")
-		{
-			while(reader.readNextStartElement())
-			{
-				if(reader.name() == "release")
-				{
-					Release release;
-
-					while(reader.readNextStartElement())
-					{
-						if(reader.name() == "active")
-						{
-							release.active = reader.readElementText().toInt();
-						}
-						else if(reader.name() == "timestamp")
-						{
-							release.timestamp = reader.readElementText().toLongLong();
-						}
-						else if(reader.name() == "FEBioVersion")
-						{
-							release.FEBioVersion = reader.readElementText();
-						}
-						else if(reader.name() == "FBSVersion")
-						{
-							release.FBSVersion = reader.readElementText();
-						}
-						else if(reader.name() == "FEBioNotes")
-						{
-							release.FEBioNotes = reader.readElementText();
-						}
-						else if(reader.name() == "FBSNotes")
-						{
-							release.FBSNotes = reader.readElementText();
-						}
-						else if(reader.name() == "files")
-						{
-							QStringList files;
-
-							while(reader.readNextStartElement())
-							{
-								if(reader.name() == "file")
-								{
-									files.append(reader.readElementText());
-								}
-								else
-								{
-									reader.skipCurrentElement();
-								}
-							}
-
-							release.files = files;
-						}
-						else if(reader.name() == "deleteFiles")
-						{
-							QStringList files;
-
-							while(reader.readNextStartElement())
-							{
-								if(reader.name() == "file")
-								{
-									files.append(reader.readElementText());
-								}
-								else
-								{
-									reader.skipCurrentElement();
-								}
-							}
-
-							release.deleteFiles = files;
-						}
-						else
-						{
-							reader.skipCurrentElement();
-						}
-					}
-
-					if(release.active) ui->releases.push_back(release);
-				}
-				else
-				{
-					reader.skipCurrentElement();
-				}
-			}
-
-		}
-		else
-		{
-
-		}
-	}
-
-	ui->lastUpdate = 0;
-
-	QFile autoUpdateXML("autoUpdate.xml");
-	autoUpdateXML.open(QIODevice::ReadOnly);
-
-	reader.setDevice(&autoUpdateXML);
-
-	if (reader.readNextStartElement())
-	{
-		if(reader.name() == "autoUpdate")
-		{
-			while(reader.readNextStartElement())
-			{
-				if(reader.name() == "lastUpdate")
-				{
-					ui->lastUpdate = reader.readElementText().toLongLong();
-				}
-				else
-				{
-					reader.skipCurrentElement();
-				}
-			}
-		}
-	}
-
-	autoUpdateXML.close();
-
-	if(ui->releases.size() > 0)
-	{
-		if(ui->releases[0].timestamp > ui->lastUpdate)
-		{
-			getDownloadSizes();
-		}
-		else
-		{
-			ui->showUpToDate();
-		}
-
-	}
-	else
-	{
-		ui->showError("Failed to read release information from server.\nPlease try again later.");
-	}
-
-}
-
-void CMainWindow::getDownloadSizes()
-{
-	// Find unique files that need to be downloaded
-	for(auto release : ui->releases)
-	{
-		if(release.timestamp > ui->lastUpdate)
-		{
-			for(auto file : release.files)
-			{
-				if(!ui->updateFiles.contains(file))
-				{
-					ui->updateFiles.append(file);
-				}
-			}
-		}
-	}
-
-	QVariantMap map;
-	map.insert("files", ui->updateFiles);
-
-	QByteArray payload = QJsonDocument::fromVariant(map).toJson();
-
-	// Create request
-	QUrl myurl;
-	myurl.setScheme(SCHEME);
-	myurl.setHost(UPDATE_URL);
-	myurl.setPort(PORT);
-	myurl.setPath(QString(URL_BASE) + "/getSizes");
-
-	QNetworkRequest request;
-	request.setUrl(myurl);
-	request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::SameOriginRedirectPolicy);
-	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-	if(NetworkAccessibleCheck())
-	{
-		restclient->post(request, payload);
-	}
-}
-
-void CMainWindow::getDownloadSizesResponse(QNetworkReply *r)
-{
-	int statusCode = r->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-
-	if(statusCode != 200)
-	{
-		QMessageBox::critical(this, "Update Failed", QString("Update Failed!\n\nUnable to communicate with server."));
-		QApplication::quit();
-	}
-
-	ui->overallSize = r->readAll().toLongLong();
-
-	ui->showUpdateInfo();
-}
-
-
 void CMainWindow::getFile()
 {
-	ui->downloadFileLabel->setText(QString("Downloading %1...").arg(ui->updateFiles[ui->currentIndex]));
-	ui->downloadOverallLabel->setText(QString("Downloading File %1 of %2").arg(ui->currentIndex + 1).arg(ui->updateFiles.size()));
+	ui->downloadFileLabel->setText(QString("Downloading %1...").arg(ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]));
+	ui->downloadOverallLabel->setText(QString("Downloading File %1 of %2").arg(ui->updateWidget->currentIndex + 1).arg(ui->updateWidget->updateFiles.size()));
 
 	QUrl myurl;
 	myurl.setScheme(SCHEME);
 	myurl.setHost(UPDATE_URL);
 	myurl.setPort(PORT);
-	myurl.setPath(QString(URL_BASE) + "/" + ui->updateFiles[ui->currentIndex]);
+	myurl.setPath(QString(URL_BASE) + "/" + ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]);
 
 	QNetworkRequest request;
 	request.setUrl(myurl);
@@ -556,16 +208,22 @@ void CMainWindow::getFileReponse(QNetworkReply *r)
 
 	if(statusCode != 200)
 	{
-		QMessageBox::critical(this, "Update Failed", QString("Update Failed!\n\nUnable to download %1.").arg(ui->updateFiles[ui->currentIndex]));
+		QMessageBox::critical(this, "Update Failed", QString("Update Failed!\n\nUnable to download %1.").arg(ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]));
 		QApplication::quit();
 	}
 
 	QByteArray data = r->readAll();
 
-	QString fileName = QApplication::applicationDirPath() + QString(REL_ROOT) + ui->updateFiles[ui->currentIndex];
+	QFileInfo fileInfo(QApplication::applicationDirPath() + QString(REL_ROOT) + ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]);
 
-	QFileInfo info(fileName);
-	makePath(QDir::fromNativeSeparators(info.absolutePath()));
+	// Insure that the path to the file exists. Add any newly created directories to autoUpdate.xml
+	// for deletion during uninstalltion
+	makePath(QDir::fromNativeSeparators(fileInfo.absolutePath()));
+
+	QString fileName = fileInfo.absoluteFilePath();
+
+	// If the file doesn't already exist, add it to autoUpdate.xml for deletion during uninstalltion.
+	if(!QFile::exists(fileName)) ui->updateWidget->newFiles.append(fileName);
 
 	QSaveFile file(fileName);
 	file.open(QIODevice::WriteOnly);
@@ -575,10 +233,10 @@ void CMainWindow::getFileReponse(QNetworkReply *r)
 
 	file.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner | QFileDevice::WriteUser | QFileDevice::ExeUser | QFileDevice::ReadUser);
 
-	ui->currentIndex++;
-	ui->downloadedSize += data.size();
+	ui->updateWidget->currentIndex++;
+	ui->updateWidget->downloadedSize += data.size();
 
-	if(ui->currentIndex < ui->updateFiles.size())
+	if(ui->updateWidget->currentIndex < ui->updateWidget->updateFiles.size())
 	{
 		getFile();
 	}
@@ -593,7 +251,7 @@ void CMainWindow::initializePage(int id)
 	switch(id)
 	{
 	case 1:
-		checkForUpdate();
+		ui->updateWidget->checkForUpdate();
 		break;
 	case 2:
 		deleteFiles();
@@ -604,21 +262,19 @@ void CMainWindow::initializePage(int id)
 	}
 }
 
+void CMainWindow::updateWidgetReady(bool update)
+{
+	if(!update)
+	{
+		this->removePage(2);
+	}
+	
+	ui->infoPage->setComplete(true);
+}
+
 void CMainWindow::connFinished(QNetworkReply *r)
 {
-	if(r->request().url().path() == QString(URL_BASE) + ".xml")
-	{
-		checkForUpdateResponse(r);
-	}
-	else if(r->request().url().path() == QString(URL_BASE) + "/getSizes")
-	{
-		getDownloadSizesResponse(r);
-	}
-	else
-	{
-		getFileReponse(r);
-	}
-
+	getFileReponse(r);
 }
 
 void CMainWindow::sslErrorHandler(QNetworkReply *reply, const QList<QSslError> &errors)
@@ -633,90 +289,16 @@ void CMainWindow::sslErrorHandler(QNetworkReply *reply, const QList<QSslError> &
 
 void CMainWindow::progress(qint64 bytesReceived, qint64 bytesTotal)
 {
-	ui->overallProgress->setValue((float)(bytesReceived + ui->downloadedSize)/(float)ui->overallSize*100);
+	ui->overallProgress->setValue((float)(bytesReceived + ui->updateWidget->downloadedSize)/(float)ui->updateWidget->overallSize*100);
 
 	ui->fileProgress->setValue((float)bytesReceived/(float)bytesTotal*100);
 }
 
-void CMainWindow::linkActivated(const QString& link)
-{
-	QDialog dlg;
-	QVBoxLayout* layout = new QVBoxLayout;
-
-	QTextEdit* edit = new QTextEdit;
-	edit->setReadOnly(true);
-	layout->addWidget(edit);
-
-	QDialogButtonBox* box = new QDialogButtonBox(QDialogButtonBox::Ok);
-	layout->addWidget(box);
-	QObject::connect(box, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
-
-	QString notes = "";
-
-	for(auto release : ui->releases)
-	{
-		if(release.timestamp > ui->lastUpdate)
-		{
-			if(link == "FEBioNotes")
-			{
-				if(!notes.isEmpty())
-				{
-					notes += "\n\n";
-				}
-
-				notes += "------------------------------------------------------\n";
-				notes += "FEBio Version: ";
-				notes += release.FEBioVersion;
-
-				QDateTime timestamp;
-				timestamp.setTime_t(release.timestamp);
-
-				notes += "   Released: ";
-				notes += timestamp.toString(Qt::SystemLocaleShortDate);
-
-				notes += "\n------------------------------------------------------\n";
-
-				notes  += release.FEBioNotes;
-			}
-
-			else if(link == "FBSNotes")
-			{
-				if(!notes.isEmpty())
-				{
-					notes += "\n\n";
-				}
-
-				notes += "------------------------------------------------------\n";
-				notes += "FEBio Version: ";
-				notes += release.FBSVersion;
-
-				QDateTime timestamp;
-				timestamp.setTime_t(release.timestamp);
-
-				notes += "   Released: ";
-				notes += timestamp.toString(Qt::SystemLocaleShortDate);
-
-				notes += "\n------------------------------------------------------\n";
-
-				notes += release.FBSNotes;
-			}
-		}
-	}
-
-	edit->setText(notes);
-
-	dlg.setLayout(layout);
-
-	dlg.resize(this->size());
-
-	dlg.exec();
-}
-
 void CMainWindow::deleteFiles()
 {
-	for(auto file : ui->deleteFiles)
+	for(auto file : ui->updateWidget->deleteFiles)
 	{
-		QFile::remove((file));
+		QFile::remove(QApplication::applicationDirPath() + QString(REL_ROOT) + file);
 	}
 }
 
@@ -735,7 +317,7 @@ void CMainWindow::makePath(QString path)
 
 	dir.mkdir(dir.absolutePath());
 
-	ui->newDirs.append(dir.absolutePath());
+	ui->updateWidget->newDirs.append(dir.absolutePath());
 }
 
 void CMainWindow::downloadsFinished()
@@ -746,19 +328,19 @@ void CMainWindow::downloadsFinished()
 	readXML(oldFiles, oldDirs);
 
 	XMLWriter writer;
-	writer.open("autoUpdate.xml");
+	writer.open(QString(QApplication::applicationDirPath() + "/autoUpdate.xml").toStdString().c_str());
 
 	XMLElement root("autoUpdate");
 	writer.add_branch(root);
 
-	writer.add_leaf("lastUpdate", std::to_string(ui->serverTime));
+	writer.add_leaf("lastUpdate", std::to_string(ui->updateWidget->serverTime));
 
 	for(auto dir : oldDirs)
 	{
 		writer.add_leaf("dir", dir.toStdString().c_str());
 	}
 
-	for(auto dir : ui->newDirs)
+	for(auto dir : ui->updateWidget->newDirs)
 	{
 		writer.add_leaf("dir", dir.toStdString().c_str());
 	}
@@ -768,7 +350,7 @@ void CMainWindow::downloadsFinished()
 		writer.add_leaf("file", file.toStdString().c_str());
 	}
 
-	for(auto file : ui->newFiles)
+	for(auto file : ui->updateWidget->newFiles)
 	{
 		writer.add_leaf("file", file.toStdString().c_str());
 	}
