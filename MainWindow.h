@@ -13,13 +13,14 @@ class CMainWindow : public QWizard
 	Q_OBJECT
 
 public:
-	CMainWindow();
+	CMainWindow(bool devChannel);
 
 protected:
 	void initializePage(int id) override;
 
 public slots:
 	void updateWidgetReady(bool update);
+	void accept() override;
 
 private slots:
 	void connFinished(QNetworkReply *r);
@@ -39,4 +40,6 @@ private:
 private:
 	Ui::CMainWindow* ui;
 	QNetworkAccessManager* restclient;
+
+	bool m_devChannel;
 };

@@ -59,8 +59,11 @@ int main(int argc, char* argv[])
 		app.setApplicationDisplayName("FEBio Studio Updater");
 		app.setWindowIcon(QIcon(":/icons/FEBioStudio.png"));
 
+		// Check if --devChannel flag is present
+		bool devChannel = argc > 1 && QString(argv[1]) == QString("--devChannel");
+
 		// create the main window
-		CMainWindow wnd;
+		CMainWindow wnd(devChannel);
 		wnd.show();
 
 		return app.exec();

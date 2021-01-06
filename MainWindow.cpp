@@ -1,5 +1,6 @@
 #include <vector>
 #include <QApplication>
+#include <QProcess>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QWizardPage>
@@ -19,6 +20,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QProgressBar>
+#include <QCheckBox>
 #include <QDateTime>
 #include <QSaveFile>
 #include <QDebug>
@@ -30,6 +32,14 @@
 #include <FEBioStudio/UpdateChecker.h>
 
 #include <iostream>
+
+#ifdef WIN32
+#define FBSBINARY "\\FEBioStudio.exe"
+#elif __APPLE__
+#define FBSBINARY "/FEBioStudio"
+#else
+#define FBSBINARY "/FEBioStudio"
+#endif
 
 namespace Ui
 {
@@ -77,6 +87,7 @@ public:
 	QProgressBar* overallProgress;
 	QLabel* downloadFileLabel;
 	QProgressBar* fileProgress;
+	QCheckBox* relaunch;
 
 	void setup(::CMainWindow* wnd, bool correctDir)
 	{
@@ -125,6 +136,8 @@ public:
 			wnd->addPage(downloadPage);
 		}
 
+		relaunch = nullptr;
+
 		QObject::connect(updateWidget, &::CUpdateWidget::ready, m_wnd, &::CMainWindow::updateWidgetReady);
 	}
 
@@ -134,7 +147,10 @@ public:
 		downloadOverallLabel->hide();
 		overallProgress->hide();
 
-		downloadFileLabel->setText("Download Complete!");
+		downloadFileLabel->setText("Update Complete!");
+
+		downloadPage->layout()->addWidget(relaunch = new QCheckBox("Relaunch FEBio Studio."));
+		relaunch->setChecked(true);
 
 		downloadPage->setComplete(true);
 	}
@@ -144,7 +160,8 @@ public:
 };
 
 
-CMainWindow::CMainWindow() : ui(new Ui::CMainWindow), restclient(new QNetworkAccessManager)
+CMainWindow::CMainWindow(bool devChannel) 
+	: ui(new Ui::CMainWindow), restclient(new QNetworkAccessManager), m_devChannel(devChannel)
 {
 	QString dir = QApplication::applicationDirPath();
 	bool correctDir = false;
@@ -188,7 +205,7 @@ void CMainWindow::getFile()
 	myurl.setScheme(SCHEME);
 	myurl.setHost(UPDATE_URL);
 	myurl.setPort(PORT);
-	myurl.setPath(QString(URL_BASE) + "/" + ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]);
+	myurl.setPath(ui->updateWidget->urlBase + "/" + ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]);
 
 	QNetworkRequest request;
 	request.setUrl(myurl);
@@ -216,7 +233,7 @@ void CMainWindow::getFileReponse(QNetworkReply *r)
 
 	QFileInfo fileInfo(QApplication::applicationDirPath() + QString(REL_ROOT) + ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]);
 
-	// Insure that the path to the file exists. Add any newly created directories to autoUpdate.xml
+	// Ensure that the path to the file exists. Add any newly created directories to autoUpdate.xml
 	// for deletion during uninstalltion
 	makePath(QDir::fromNativeSeparators(fileInfo.absolutePath()));
 
@@ -251,7 +268,7 @@ void CMainWindow::initializePage(int id)
 	switch(id)
 	{
 	case 1:
-		ui->updateWidget->checkForUpdate();
+		ui->updateWidget->checkForUpdate(m_devChannel);
 		break;
 	case 2:
 		deleteFiles();
@@ -362,5 +379,14 @@ void CMainWindow::downloadsFinished()
 	ui->downloadsFinished();
 }
 
+void CMainWindow::accept()
+{
+	if(ui->relaunch && ui->relaunch->isChecked())
+	{
+		QProcess* fbs = new QProcess;
+		fbs->start(QApplication::applicationDirPath() + FBSBINARY);
+	}
 
+	QWizard::accept();
+}
 
