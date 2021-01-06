@@ -20,7 +20,7 @@ protected:
 
 public slots:
 	void updateWidgetReady(bool update);
-	void accept() override;
+	void onFinish();
 
 private slots:
 	void connFinished(QNetworkReply *r);

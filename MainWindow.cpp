@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QWizardPage>
+#include <QPushButton>
 #include <QLabel>
 #include <QAbstractButton>
 #include <QMessageBox>
@@ -186,6 +187,7 @@ CMainWindow::CMainWindow(bool devChannel)
 
 	ui->setup(this, correctDir);
 
+	connect(this->button(QWizard::FinishButton), &QPushButton::clicked, this, &CMainWindow::onFinish);
 	connect(restclient, &QNetworkAccessManager::finished, this, &CMainWindow::connFinished);
 	connect(restclient, &QNetworkAccessManager::sslErrors, this, &CMainWindow::sslErrorHandler);
 }
@@ -379,12 +381,12 @@ void CMainWindow::downloadsFinished()
 	ui->downloadsFinished();
 }
 
-void CMainWindow::accept()
+void CMainWindow::onFinish()
 {
 	if(ui->relaunch && ui->relaunch->isChecked())
 	{
 		QProcess* fbs = new QProcess;
-		fbs->start(QApplication::applicationDirPath() + FBSBINARY);
+		fbs->startDetached(QApplication::applicationDirPath() + FBSBINARY);
 	}
 
 	QWizard::accept();
