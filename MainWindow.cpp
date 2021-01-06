@@ -81,7 +81,6 @@ public:
 	MyWizardPage* infoPage;
 	QVBoxLayout* infoLayout;
 	::CUpdateWidget* updateWidget;
-	// QLabel* infoLabel;
 
 	MyWizardPage* downloadPage;
 	QLabel* downloadOverallLabel;
@@ -186,6 +185,10 @@ CMainWindow::CMainWindow(bool devChannel)
 	
 
 	ui->setup(this, correctDir);
+
+	QList<QWizard::WizardButton> button_layout;
+  	button_layout << QWizard::Stretch << QWizard::NextButton << QWizard::CancelButton;
+  	setButtonLayout(button_layout);
 
 	connect(this->button(QWizard::FinishButton), &QPushButton::clicked, this, &CMainWindow::onFinish);
 	connect(restclient, &QNetworkAccessManager::finished, this, &CMainWindow::connFinished);
