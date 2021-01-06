@@ -153,6 +153,10 @@ public:
 		relaunch->setChecked(true);
 
 		downloadPage->setComplete(true);
+
+		QList<QWizard::WizardButton> button_layout;
+  		button_layout << QWizard::Stretch << QWizard::FinishButton;
+  		m_wnd->setButtonLayout(button_layout);
 	}
 
 public:
