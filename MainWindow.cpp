@@ -394,7 +394,7 @@ void CMainWindow::onFinish()
 	if(ui->relaunch && ui->relaunch->isChecked())
 	{
 		QProcess* fbs = new QProcess;
-		fbs->startDetached(QApplication::applicationDirPath() + FBSBINARY);
+		fbs->startDetached(QApplication::applicationDirPath() + FBSBINARY, QStringList());
 	}
 
 	QWizard::accept();
