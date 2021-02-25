@@ -236,6 +236,7 @@ void CMainWindow::getFileReponse(QNetworkReply *r)
 	{
 		QMessageBox::critical(this, "Update Failed", QString("Update Failed!\n\nUnable to download %1.").arg(ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]));
 		QApplication::quit();
+		return;
 	}
 
 	QByteArray data = r->readAll();
