@@ -289,9 +289,9 @@ void CMainWindow::initializePage(int id)
 	}
 }
 
-void CMainWindow::updateWidgetReady(bool update)
+void CMainWindow::updateWidgetReady(bool update, bool terminal)
 {
-	if(!update)
+	if(!update || terminal)
 	{
 		this->removePage(2);
 	}

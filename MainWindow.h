@@ -19,7 +19,7 @@ protected:
 	void initializePage(int id) override;
 
 public slots:
-	void updateWidgetReady(bool update);
+	void updateWidgetReady(bool update, bool terminal);
 	void onFinish();
 
 private slots:
