@@ -130,6 +130,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named mvUtil
+
+# Build rule for target.
+mvUtil: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mvUtil
+.PHONY : mvUtil
+
+# fast build rule for target.
+mvUtil/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mvUtil.dir/build.make CMakeFiles/mvUtil.dir/build
+.PHONY : mvUtil/fast
+
+#=============================================================================
 # Target rules for targets named FEBioStudioUpdater
 
 # Build rule for target.
@@ -141,6 +154,19 @@ FEBioStudioUpdater: cmake_check_build_system
 FEBioStudioUpdater/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/build
 .PHONY : FEBioStudioUpdater/fast
+
+#=============================================================================
+# Target rules for targets named mvUtil_autogen
+
+# Build rule for target.
+mvUtil_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mvUtil_autogen
+.PHONY : mvUtil_autogen
+
+# fast build rule for target.
+mvUtil_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mvUtil_autogen.dir/build.make CMakeFiles/mvUtil_autogen.dir/build
+.PHONY : mvUtil_autogen/fast
 
 #=============================================================================
 # Target rules for targets named FEBioStudioUpdater_autogen
@@ -236,6 +262,33 @@ MainWindow.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/MainWindow.cpp.s
 .PHONY : MainWindow.cpp.s
 
+getapppath.o: getapppath.cpp.o
+
+.PHONY : getapppath.o
+
+# target to build an object file
+getapppath.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/getapppath.cpp.o
+.PHONY : getapppath.cpp.o
+
+getapppath.i: getapppath.cpp.i
+
+.PHONY : getapppath.i
+
+# target to preprocess a source file
+getapppath.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/getapppath.cpp.i
+.PHONY : getapppath.cpp.i
+
+getapppath.s: getapppath.cpp.s
+
+.PHONY : getapppath.s
+
+# target to generate assembly for a file
+getapppath.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/getapppath.cpp.s
+.PHONY : getapppath.cpp.s
+
 home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.o: home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.o
 
 .PHONY : home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.o
@@ -263,6 +316,60 @@ home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s
 .PHONY : home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s
 
+mvUtil/mvUtil.o: mvUtil/mvUtil.cpp.o
+
+.PHONY : mvUtil/mvUtil.o
+
+# target to build an object file
+mvUtil/mvUtil.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mvUtil.dir/build.make CMakeFiles/mvUtil.dir/mvUtil/mvUtil.cpp.o
+.PHONY : mvUtil/mvUtil.cpp.o
+
+mvUtil/mvUtil.i: mvUtil/mvUtil.cpp.i
+
+.PHONY : mvUtil/mvUtil.i
+
+# target to preprocess a source file
+mvUtil/mvUtil.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mvUtil.dir/build.make CMakeFiles/mvUtil.dir/mvUtil/mvUtil.cpp.i
+.PHONY : mvUtil/mvUtil.cpp.i
+
+mvUtil/mvUtil.s: mvUtil/mvUtil.cpp.s
+
+.PHONY : mvUtil/mvUtil.s
+
+# target to generate assembly for a file
+mvUtil/mvUtil.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mvUtil.dir/build.make CMakeFiles/mvUtil.dir/mvUtil/mvUtil.cpp.s
+.PHONY : mvUtil/mvUtil.cpp.s
+
+mvUtil_autogen/mocs_compilation.o: mvUtil_autogen/mocs_compilation.cpp.o
+
+.PHONY : mvUtil_autogen/mocs_compilation.o
+
+# target to build an object file
+mvUtil_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mvUtil.dir/build.make CMakeFiles/mvUtil.dir/mvUtil_autogen/mocs_compilation.cpp.o
+.PHONY : mvUtil_autogen/mocs_compilation.cpp.o
+
+mvUtil_autogen/mocs_compilation.i: mvUtil_autogen/mocs_compilation.cpp.i
+
+.PHONY : mvUtil_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+mvUtil_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mvUtil.dir/build.make CMakeFiles/mvUtil.dir/mvUtil_autogen/mocs_compilation.cpp.i
+.PHONY : mvUtil_autogen/mocs_compilation.cpp.i
+
+mvUtil_autogen/mocs_compilation.s: mvUtil_autogen/mocs_compilation.cpp.s
+
+.PHONY : mvUtil_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+mvUtil_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mvUtil.dir/build.make CMakeFiles/mvUtil.dir/mvUtil_autogen/mocs_compilation.cpp.s
+.PHONY : mvUtil_autogen/mocs_compilation.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -272,7 +379,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... FEBioStudioUpdater_autogen"
+	@echo "... mvUtil_autogen"
 	@echo "... FEBioStudioUpdater"
+	@echo "... mvUtil"
 	@echo "... FEBioStudioUpdater.o"
 	@echo "... FEBioStudioUpdater.i"
 	@echo "... FEBioStudioUpdater.s"
@@ -282,9 +391,18 @@ help:
 	@echo "... MainWindow.o"
 	@echo "... MainWindow.i"
 	@echo "... MainWindow.s"
+	@echo "... getapppath.o"
+	@echo "... getapppath.i"
+	@echo "... getapppath.s"
 	@echo "... home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.o"
 	@echo "... home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.i"
 	@echo "... home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.s"
+	@echo "... mvUtil/mvUtil.o"
+	@echo "... mvUtil/mvUtil.i"
+	@echo "... mvUtil/mvUtil.s"
+	@echo "... mvUtil_autogen/mocs_compilation.o"
+	@echo "... mvUtil_autogen/mocs_compilation.i"
+	@echo "... mvUtil_autogen/mocs_compilation.s"
 .PHONY : help
 
 

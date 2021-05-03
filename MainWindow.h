@@ -13,7 +13,7 @@ class CMainWindow : public QWizard
 	Q_OBJECT
 
 public:
-	CMainWindow(bool devChannel);
+	CMainWindow(bool devChannel, bool updaterUpdateCheck);
 
 protected:
 	void initializePage(int id) override;
@@ -42,4 +42,5 @@ private:
 	QNetworkAccessManager* restclient;
 
 	bool m_devChannel;
+	bool m_updaterUpdateCheck;
 };

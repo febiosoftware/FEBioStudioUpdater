@@ -36,10 +36,16 @@
 
 #ifdef WIN32
 #define FBSBINARY "\\FEBioStudio.exe"
+#define FBSUPDATERBINARY "\\FEBioStudioUpdater.exe"
+#define MVUTIL "\\mvUtil.exe"
 #elif __APPLE__
 #define FBSBINARY "/FEBioStudio"
+#define FBSUPDATERBINARY "/FEBioStudioUpdater"
+#define MVUTIL "/mvUtil"
 #else
 #define FBSBINARY "/FEBioStudio"
+#define FBSUPDATERBINARY "/FEBioStudioUpdater"
+#define MVUTIL "/mvUtil"
 #endif
 
 namespace Ui
@@ -147,10 +153,17 @@ public:
 		downloadOverallLabel->hide();
 		overallProgress->hide();
 
-		downloadFileLabel->setText("Update Complete!");
+		if(updateWidget->updaterUpdateNeeded)
+		{
+			downloadFileLabel->setText("Auto-Updater update complete!\n\nThe updater must now restart to update FEBio Studio.");
+		}
+		else
+		{
+			downloadFileLabel->setText("Update Complete!");
 
-		downloadPage->layout()->addWidget(relaunch = new QCheckBox("Relaunch FEBio Studio."));
-		relaunch->setChecked(true);
+			downloadPage->layout()->addWidget(relaunch = new QCheckBox("Relaunch FEBio Studio."));
+			relaunch->setChecked(true);
+		}
 
 		downloadPage->setComplete(true);
 
@@ -164,8 +177,8 @@ public:
 };
 
 
-CMainWindow::CMainWindow(bool devChannel) 
-	: ui(new Ui::CMainWindow), restclient(new QNetworkAccessManager), m_devChannel(devChannel)
+CMainWindow::CMainWindow(bool devChannel, bool updaterUpdateCheck) 
+	: ui(new Ui::CMainWindow), restclient(new QNetworkAccessManager), m_devChannel(devChannel), m_updaterUpdateCheck(updaterUpdateCheck)
 {
 	QString dir = QApplication::applicationDirPath();
 	bool correctDir = false;
@@ -252,6 +265,16 @@ void CMainWindow::getFileReponse(QNetworkReply *r)
 	// If the file doesn't already exist, add it to autoUpdate.xml for deletion during uninstalltion.
 	if(!QFile::exists(fileName)) ui->updateWidget->newFiles.append(fileName);
 
+	// If we're downloading an updater file, add the suffix ".temp"
+	if(ui->updateWidget->updaterUpdateNeeded)
+	{
+		if(!fileName.contains("mvUtil"))
+		{
+			fileName += ".temp";
+		}
+		
+	}
+	
 	QSaveFile file(fileName);
 	file.open(QIODevice::WriteOnly);
 
@@ -278,7 +301,7 @@ void CMainWindow::initializePage(int id)
 	switch(id)
 	{
 	case 1:
-		ui->updateWidget->checkForUpdate(m_devChannel);
+		ui->updateWidget->checkForUpdate(m_devChannel, m_updaterUpdateCheck);
 		break;
 	case 2:
 		deleteFiles();
@@ -360,7 +383,17 @@ void CMainWindow::downloadsFinished()
 	XMLElement root("autoUpdate");
 	writer.add_branch(root);
 
-	writer.add_leaf("lastUpdate", std::to_string(ui->updateWidget->serverTime));
+	// If we're doing an updater update, don't update the last update time in autoUpdate.xml
+	if(m_updaterUpdateCheck && ui->updateWidget->updaterUpdateNeeded)
+	{
+		writer.add_leaf("lastUpdate", std::to_string(ui->updateWidget->lastUpdate));
+		// writer.add_leaf("lastUpdaterUpdate", std::to_string(ui->updateWidget->serverTime));
+	}
+	else
+	{
+		writer.add_leaf("lastUpdate", std::to_string(ui->updateWidget->serverTime));
+		// writer.add_leaf("lastUpdaterUpdate", std::to_string(ui->updateWidget->lastUpdaterUpdate));
+	}
 
 	for(auto dir : oldDirs)
 	{
@@ -391,11 +424,35 @@ void CMainWindow::downloadsFinished()
 
 void CMainWindow::onFinish()
 {
-	if(ui->relaunch && ui->relaunch->isChecked())
+	if(ui->updateWidget->updaterUpdateNeeded)
 	{
-		QProcess* fbs = new QProcess;
-		fbs->startDetached(QApplication::applicationDirPath() + FBSBINARY, QStringList());
+		QStringList args;
+		args.push_back(QApplication::applicationDirPath() + FBSUPDATERBINARY);
+		if(m_devChannel) args.push_back("-d");
+
+		for(auto filename : ui->updateWidget->updateFiles)
+		{
+			if(filename.contains("mvUtil")) continue;
+
+			QFileInfo fileInfo(QApplication::applicationDirPath() + QString(REL_ROOT) + filename);
+			QString absName = fileInfo.absoluteFilePath();
+
+			args.push_back(absName + ".temp");
+			args.push_back(absName);
+		}
+
+		QProcess* mvUtil = new QProcess;
+		mvUtil->startDetached(QApplication::applicationDirPath() + MVUTIL, args);
 	}
+	else
+	{
+		if(ui->relaunch && ui->relaunch->isChecked())
+		{
+			QProcess* fbs = new QProcess;
+			fbs->startDetached(QApplication::applicationDirPath() + FBSBINARY, QStringList());
+		}
+	}
+	
 
 	QWizard::accept();
 }

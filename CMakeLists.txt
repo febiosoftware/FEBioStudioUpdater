@@ -25,9 +25,19 @@ find_package(Qt5 COMPONENTS Widgets Network REQUIRED)
 include_directories(.)
 include_directories(${FEBIOSTUDIO_DIR})
 
+if(WIN32)
+    add_definitions(-DWIN32)
+elseif(APPLE)
+    add_definitions(-D__APPLE__)
+else()
+	add_definitions(-DLINUX)
+endif()
+
 file(GLOB SOURCES "*.cpp")
 
 add_executable(FEBioStudioUpdater ${SOURCES} ${FEBIOSTUDIO_DIR}/FEBioStudio/UpdateChecker.cpp)
+
+add_executable(mvUtil "mvUtil/mvUtil.cpp")
 
 
 set(FEBIOSTUDIO_LIBS ${FEBIOSTUDIO_DIR}/build/Release/lib/libXML.a)

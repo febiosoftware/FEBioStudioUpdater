@@ -60,10 +60,24 @@ int main(int argc, char* argv[])
 		app.setWindowIcon(QIcon(":/icons/FEBioStudio.png"));
 
 		// Check if --devChannel flag is present
-		bool devChannel = argc > 1 && QString(argv[1]) == QString("--devChannel");
+		bool devChannel = false;
+		bool updaterUpdateCheck = true;
+		for(int index = 1; index < argc; index++)
+		{
+			if(QString(argv[index]) == QString("--devChannel"))
+			{
+				devChannel = true;
+			}
+			else if(QString(argv[index]) == QString("--noUpdaterCheck"))
+			{
+				updaterUpdateCheck = false;
+			}
+		}
+		
+		 argc > 1 && QString(argv[1]) == QString("--devChannel");
 
 		// create the main window
-		CMainWindow wnd(devChannel);
+		CMainWindow wnd(devChannel, updaterUpdateCheck);
 		wnd.show();
 
 		return app.exec();
@@ -72,8 +86,13 @@ int main(int argc, char* argv[])
 
 void readXML(QStringList& files, QStringList& dirs)
 {
+	char updaterPath[1050];
+	char updaterDir[1024];
+	get_app_path(updaterDir, 1023);
+	sprintf(updaterPath, "%sautoUpdate.xml", updaterDir);
+
 	XMLReader reader;
-	if(reader.Open("autoUpdate.xml") == false) return;
+	if(reader.Open(updaterPath) == false) return;
 
 	XMLTag tag;
 	if(reader.FindTag("autoUpdate", tag) == false) return;
@@ -106,7 +125,12 @@ void readXML(QStringList& files, QStringList& dirs)
 
 void uninstall()
 {
-	if(QFileInfo::exists("autoUpdate.xml"))
+	char updaterPath[1050];
+	char updaterDir[1024];
+	get_app_path(updaterDir, 1023);
+	sprintf(updaterPath, "%sautoUpdate.xml", updaterDir);
+
+	if(QFileInfo::exists(updaterPath))
 	{
 		QStringList files;
 		QStringList dirs;
