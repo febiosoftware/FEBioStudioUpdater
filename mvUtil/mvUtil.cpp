@@ -21,11 +21,11 @@ int main(int argc, char* argv[])
     for(int index = start; index < argc; index += 2)
     {
         std::rename(argv[index], argv[index + 1]);
-    }
-
-#ifdef LINUX
-    chmod(argv[1], S_IRWXU|S_IXGRP|S_IXOTH);
+        
+#ifndef WIN32
+        chmod(argv[1], S_IRWXU|S_IXGRP|S_IXOTH);
 #endif
+    }
 
     char command[100];
 
