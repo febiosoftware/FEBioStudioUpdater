@@ -153,7 +153,7 @@ public:
 		downloadOverallLabel->hide();
 		overallProgress->hide();
 
-		if(updateWidget->updaterUpdateNeeded)
+		if(updateWidget->doingUpdaterUpdate)
 		{
 			downloadFileLabel->setText("Auto-Updater update complete!\n\nThe updater must now restart to update FEBio Studio.");
 		}
@@ -227,7 +227,15 @@ void CMainWindow::getFile()
 	myurl.setScheme(SCHEME);
 	myurl.setHost(UPDATE_URL);
 	myurl.setPort(PORT);
-	myurl.setPath(ui->updateWidget->urlBase + "/" + ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]);
+
+	if(ui->updateWidget->doingUpdaterUpdate)
+	{
+		myurl.setPath(ui->updateWidget->updaterBase + "/" + ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]);
+	}
+	else
+	{
+		myurl.setPath(ui->updateWidget->urlBase + "/" + ui->updateWidget->updateFiles[ui->updateWidget->currentIndex]);
+	}
 
 	QNetworkRequest request;
 	request.setUrl(myurl);
@@ -266,13 +274,12 @@ void CMainWindow::getFileReponse(QNetworkReply *r)
 	if(!QFile::exists(fileName)) ui->updateWidget->newFiles.append(fileName);
 
 	// If we're downloading an updater file, add the suffix ".temp"
-	if(ui->updateWidget->updaterUpdateNeeded)
+	if(ui->updateWidget->doingUpdaterUpdate)
 	{
 		if(!fileName.contains("mvUtil"))
 		{
 			fileName += ".temp";
 		}
-		
 	}
 	
 	QSaveFile file(fileName);
@@ -384,7 +391,7 @@ void CMainWindow::downloadsFinished()
 	writer.add_branch(root);
 
 	// If we're doing an updater update, don't update the last update time in autoUpdate.xml
-	if(m_updaterUpdateCheck && ui->updateWidget->updaterUpdateNeeded)
+	if(m_updaterUpdateCheck && ui->updateWidget->doingUpdaterUpdate)
 	{
 		writer.add_leaf("lastUpdate", std::to_string(ui->updateWidget->lastUpdate));
 		// writer.add_leaf("lastUpdaterUpdate", std::to_string(ui->updateWidget->serverTime));
@@ -424,7 +431,7 @@ void CMainWindow::downloadsFinished()
 
 void CMainWindow::onFinish()
 {
-	if(ui->updateWidget->updaterUpdateNeeded)
+	if(ui->updateWidget->doingUpdaterUpdate)
 	{
 		QStringList args;
 		args.push_back(QApplication::applicationDirPath() + FBSUPDATERBINARY);
