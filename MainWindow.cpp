@@ -155,7 +155,8 @@ public:
 
 		if(updateWidget->doingUpdaterUpdate)
 		{
-			downloadFileLabel->setText("Auto-Updater update complete!\n\nThe updater must now restart to update FEBio Studio.");
+			downloadFileLabel->setText("Auto-Updater update complete!\n\nThe updater must now restart to update FEBio Studio.\n\n"
+					"Click Finish to restart the updater and start the update to FEBio Studio.");
 		}
 		else
 		{
@@ -394,12 +395,10 @@ void CMainWindow::downloadsFinished()
 	if(m_updaterUpdateCheck && ui->updateWidget->doingUpdaterUpdate)
 	{
 		writer.add_leaf("lastUpdate", std::to_string(ui->updateWidget->lastUpdate));
-		// writer.add_leaf("lastUpdaterUpdate", std::to_string(ui->updateWidget->serverTime));
 	}
 	else
 	{
 		writer.add_leaf("lastUpdate", std::to_string(ui->updateWidget->serverTime));
-		// writer.add_leaf("lastUpdaterUpdate", std::to_string(ui->updateWidget->lastUpdaterUpdate));
 	}
 
 	for(auto dir : oldDirs)
