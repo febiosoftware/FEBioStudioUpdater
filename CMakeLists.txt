@@ -38,7 +38,7 @@ include_directories(${FEBIOSTUDIO_DIR})
 
 file(GLOB SOURCES "*.cpp")
 
-add_executable(FEBioStudioUpdater ${SOURCES} ${FEBIOSTUDIO_DIR}/FEBioStudio/UpdateChecker.cpp)
+add_executable(FEBioStudioUpdater ${SOURCES} FEBioStudioUpdater.qrc ${FEBIOSTUDIO_DIR}/FEBioStudio/UpdateChecker.cpp)
 
 add_executable(mvUtil "mvUtil/mvUtil.cpp")
 

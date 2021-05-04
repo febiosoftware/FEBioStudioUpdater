@@ -6,6 +6,7 @@
 #include <QWizardPage>
 #include <QPushButton>
 #include <QLabel>
+#include <QPixmap>
 #include <QAbstractButton>
 #include <QMessageBox>
 #include <QListWidget>
@@ -157,6 +158,8 @@ public:
 		{
 			downloadFileLabel->setText("Auto-Updater update complete!\n\nThe updater must now restart to update FEBio Studio.\n\n"
 					"Click Finish to restart the updater and start the update to FEBio Studio.");
+
+			downloadFileLabel->setWordWrap(true);
 		}
 		else
 		{
@@ -201,6 +204,11 @@ CMainWindow::CMainWindow(bool devChannel, bool updaterUpdateCheck)
 	}
 #endif
 	
+	setWindowTitle("FEBio Studio Updater");
+
+	setPixmap(QWizard::WatermarkPixmap, QPixmap(":/images/leftSide.png"));
+	setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/leftSide.png"));
+	setPixmap(QWizard::LogoPixmap, QPixmap(":/images/FEBioStudio.png"));
 
 	ui->setup(this, correctDir);
 
@@ -325,8 +333,12 @@ void CMainWindow::updateWidgetReady(bool update, bool terminal)
 	if(!update || terminal)
 	{
 		this->removePage(2);
+
+		QList<QWizard::WizardButton> button_layout;
+  		button_layout << QWizard::Stretch << QWizard::FinishButton;
+  		setButtonLayout(button_layout);
 	}
-	
+
 	ui->infoPage->setComplete(true);
 }
 

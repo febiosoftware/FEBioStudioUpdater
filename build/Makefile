@@ -208,6 +208,33 @@ FEBioStudioUpdater.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/FEBioStudioUpdater.cpp.s
 .PHONY : FEBioStudioUpdater.cpp.s
 
+FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.o: FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.o
+
+.PHONY : FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.o
+
+# target to build an object file
+FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.o
+.PHONY : FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.o
+
+FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.i: FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.i
+
+.PHONY : FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.i
+
+# target to preprocess a source file
+FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.i
+.PHONY : FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.i
+
+FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.s: FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.s
+
+.PHONY : FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.s
+
+# target to generate assembly for a file
+FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.s
+.PHONY : FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.cpp.s
+
 FEBioStudioUpdater_autogen/mocs_compilation.o: FEBioStudioUpdater_autogen/mocs_compilation.cpp.o
 
 .PHONY : FEBioStudioUpdater_autogen/mocs_compilation.o
@@ -385,6 +412,9 @@ help:
 	@echo "... FEBioStudioUpdater.o"
 	@echo "... FEBioStudioUpdater.i"
 	@echo "... FEBioStudioUpdater.s"
+	@echo "... FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.o"
+	@echo "... FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.i"
+	@echo "... FEBioStudioUpdater_autogen/EWIEGA46WW/qrc_FEBioStudioUpdater.s"
 	@echo "... FEBioStudioUpdater_autogen/mocs_compilation.o"
 	@echo "... FEBioStudioUpdater_autogen/mocs_compilation.i"
 	@echo "... FEBioStudioUpdater_autogen/mocs_compilation.s"

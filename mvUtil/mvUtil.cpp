@@ -4,8 +4,10 @@
 #include <sys/stat.h>
 #include <iostream>
 
+#ifdef WIN32
 #include <Windows.h>
 #include <WinBase.h>
+#endif
 
 int main(int argc, char* argv[])
 {
@@ -24,9 +26,11 @@ int main(int argc, char* argv[])
 
 	for (int index = start; index < argc; index += 2)
 	{
-		bool success = true;
-		int n = 0;
-//		while ((success = MoveFileA(argv[index], argv[index + 1])) == FALSE)
+
+// Windows won't allow a file to be overwritten by std::rename, so we 
+// delete it first. We also pause and loop so that we can be sure that 
+// the lock on the auto-updater executable is gone 
+#ifdef WIN32
 		while (std::remove(argv[index + 1]) != 0)
 		{
 			std::cout << "Let's try again\n";
@@ -34,8 +38,7 @@ int main(int argc, char* argv[])
 			n++;
 			if (n > 10) break;
 		}
-
-		std::cout << success << std::endl;
+#endif
 
 		// rename the file
 		std::rename(argv[index], argv[index + 1]);
