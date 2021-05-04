@@ -2,6 +2,10 @@
 #include <cstdlib>
 #include <string.h>
 #include <sys/stat.h>
+#include <iostream>
+
+#include <Windows.h>
+#include <WinBase.h>
 
 int main(int argc, char* argv[])
 {
@@ -18,9 +22,23 @@ int main(int argc, char* argv[])
 
     if((argc - start) % 2 != 0) return -1;
 
-    for(int index = start; index < argc; index += 2)
-    {
-        std::rename(argv[index], argv[index + 1]);
+	for (int index = start; index < argc; index += 2)
+	{
+		bool success = true;
+		int n = 0;
+//		while ((success = MoveFileA(argv[index], argv[index + 1])) == FALSE)
+		while (std::remove(argv[index + 1]) != 0)
+		{
+			std::cout << "Let's try again\n";
+			_sleep(500);
+			n++;
+			if (n > 10) break;
+		}
+
+		std::cout << success << std::endl;
+
+		// rename the file
+		std::rename(argv[index], argv[index + 1]);
         
 #ifndef WIN32
         chmod(argv[1], S_IRWXU|S_IXGRP|S_IXOTH);
