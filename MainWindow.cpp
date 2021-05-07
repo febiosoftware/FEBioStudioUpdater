@@ -27,6 +27,7 @@
 #include <QSaveFile>
 #include <QDebug>
 #include <QLocale>
+#include <QStringList>
 #include <QXmlStreamReader>
 #include "FEBioStudioUpdater.h"
 #include "MainWindow.h"
