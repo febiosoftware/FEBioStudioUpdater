@@ -58,19 +58,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /home/mherron/Resources/cmake-3.19.1-Linux-x86_64/bin/cmake
+CMAKE_COMMAND = /home/sci/mherron/Resources/cmake-3.19.1-Linux-x86_64/bin/cmake
 
 # The command to remove a file.
-RM = /home/mherron/Resources/cmake-3.19.1-Linux-x86_64/bin/cmake -E rm -f
+RM = /home/sci/mherron/Resources/cmake-3.19.1-Linux-x86_64/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mherron/Projects/FEBioStudioUpdater
+CMAKE_SOURCE_DIR = /home/sci/mherron/Projects/FEBioStudioUpdater
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mherron/Projects/FEBioStudioUpdater/build
+CMAKE_BINARY_DIR = /home/sci/mherron/Projects/FEBioStudioUpdater/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -78,7 +78,7 @@ CMAKE_BINARY_DIR = /home/mherron/Projects/FEBioStudioUpdater/build
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/home/mherron/Resources/cmake-3.19.1-Linux-x86_64/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/home/sci/mherron/Resources/cmake-3.19.1-Linux-x86_64/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -89,7 +89,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/home/mherron/Resources/cmake-3.19.1-Linux-x86_64/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/home/sci/mherron/Resources/cmake-3.19.1-Linux-x86_64/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -99,9 +99,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mherron/Projects/FEBioStudioUpdater/build/CMakeFiles /home/mherron/Projects/FEBioStudioUpdater/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sci/mherron/Projects/FEBioStudioUpdater/build/CMakeFiles /home/sci/mherron/Projects/FEBioStudioUpdater/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mherron/Projects/FEBioStudioUpdater/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sci/mherron/Projects/FEBioStudioUpdater/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -316,32 +316,32 @@ getapppath.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/getapppath.cpp.s
 .PHONY : getapppath.cpp.s
 
-home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.o: home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.o
+home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.o: home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.o
 
-.PHONY : home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.o
+.PHONY : home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.o
 
 # target to build an object file
-home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.o
-.PHONY : home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.o
+home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.o
+.PHONY : home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.o
 
-home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.i: home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.i
+home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.i: home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.i
 
-.PHONY : home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.i
+.PHONY : home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.i
 
 # target to preprocess a source file
-home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.i
-.PHONY : home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.i
+home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.i
+.PHONY : home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.i
 
-home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.s: home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s
+home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.s: home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s
 
-.PHONY : home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.s
+.PHONY : home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.s
 
 # target to generate assembly for a file
-home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s
-.PHONY : home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s
+home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FEBioStudioUpdater.dir/build.make CMakeFiles/FEBioStudioUpdater.dir/home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s
+.PHONY : home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.cpp.s
 
 mvUtil/mvUtil.o: mvUtil/mvUtil.cpp.o
 
@@ -424,9 +424,9 @@ help:
 	@echo "... getapppath.o"
 	@echo "... getapppath.i"
 	@echo "... getapppath.s"
-	@echo "... home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.o"
-	@echo "... home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.i"
-	@echo "... home/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.s"
+	@echo "... home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.o"
+	@echo "... home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.i"
+	@echo "... home/sci/mherron/Projects/FEBioStudio/FEBioStudio/UpdateChecker.s"
 	@echo "... mvUtil/mvUtil.o"
 	@echo "... mvUtil/mvUtil.i"
 	@echo "... mvUtil/mvUtil.s"
