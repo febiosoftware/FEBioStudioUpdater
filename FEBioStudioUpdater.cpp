@@ -103,11 +103,11 @@ void readXML(QStringList& files, QStringList& dirs)
 		{
 			if(tag == "file")
 			{
-				files.append(tag.m_szval);
+				files.append(tag.m_sval.c_str());
 			}
 			else if(tag == "dir")
 			{
-				dirs.append(tag.m_szval);
+				dirs.append(tag.m_sval.c_str());
 			}
 
 			++tag;

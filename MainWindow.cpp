@@ -33,6 +33,7 @@
 #include "MainWindow.h"
 #include <XML/XMLWriter.h>
 #include <FEBioStudio/UpdateChecker.h>
+#include <FEBioStudio/ServerSettings.h>
 
 #include <iostream>
 
@@ -234,9 +235,9 @@ void CMainWindow::getFile()
 	ui->downloadOverallLabel->setText(QString("Downloading File %1 of %2").arg(ui->updateWidget->currentIndex + 1).arg(ui->updateWidget->updateFiles.size()));
 
 	QUrl myurl;
-	myurl.setScheme(SCHEME);
-	myurl.setHost(UPDATE_URL);
-	myurl.setPort(PORT);
+	myurl.setScheme(ServerSettings::Scheme());
+	myurl.setHost(ServerSettings::URL());
+	myurl.setPort(ServerSettings::Port());
 
 	if(ui->updateWidget->doingUpdaterUpdate)
 	{

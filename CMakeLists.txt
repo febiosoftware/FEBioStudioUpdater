@@ -82,7 +82,7 @@ include_directories(${FEBIOSTUDIO_DIR})
 
 file(GLOB SOURCES "*.cpp")
 
-add_executable(FEBioStudioUpdater ${SOURCES} FEBioStudioUpdater.qrc ${FEBIOSTUDIO_DIR}/FEBioStudio/UpdateChecker.cpp)
+add_executable(FEBioStudioUpdater ${SOURCES} FEBioStudioUpdater.qrc ${FEBIOSTUDIO_DIR}/FEBioStudio/UpdateChecker.cpp ${FEBIOSTUDIO_DIR}/FEBioStudio/ServerSettings.cpp)
 
 add_executable(mvUtil "mvUtil/mvUtil.cpp")
 
@@ -96,7 +96,7 @@ if (WIN32)
 elseif(APPLE)
     set(FEBIOSTUDIO_LIBS ${FEBIOSTUDIO_DIR}/build/lib/libXML.a)
 else()
-    set(FEBIOSTUDIO_LIBS ${FEBIOSTUDIO_DIR}/build/lib/libXML.a)
+    set(FEBIOSTUDIO_LIBS ${FEBIOSTUDIO_DIR}/build/Release/lib/libXML.a)
 endif()
 
 target_link_libraries(FEBioStudioUpdater Qt6::Widgets Qt6::Network ${FEBIOSTUDIO_LIBS})
