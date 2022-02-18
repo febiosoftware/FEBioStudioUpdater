@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
 // delete it first. We also pause and loop so that we can be sure that 
 // the lock on the auto-updater executable is gone 
 #ifdef WIN32
+        int n = 0;
 		while (std::remove(argv[index + 1]) != 0)
 		{
 			std::cout << "Let's try again\n";

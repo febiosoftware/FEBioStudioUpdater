@@ -1,4 +1,6 @@
+#pragma once
 #include <QWizard>
+#include <QSslerror>
 
 namespace Ui{
 class CMainWindow;
@@ -6,7 +8,6 @@ class CMainWindow;
 
 class QNetworkAccessManager;
 class QNetworkReply;
-class QSslError;
 
 class CMainWindow : public QWizard
 {
