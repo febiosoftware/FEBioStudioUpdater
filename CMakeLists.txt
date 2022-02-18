@@ -96,7 +96,7 @@ if (WIN32)
 elseif(APPLE)
     set(FEBIOSTUDIO_LIBS ${FEBIOSTUDIO_DIR}/build/lib/libXML.a)
 else()
-    set(FEBIOSTUDIO_LIBS ${FEBIOSTUDIO_DIR}/build/Release/lib/libXML.a)
+    set(FEBIOSTUDIO_LIBS ${FEBIOSTUDIO_DIR}/build/lib/libXML.a)
 endif()
 
 target_link_libraries(FEBioStudioUpdater Qt6::Widgets Qt6::Network ${FEBIOSTUDIO_LIBS})
