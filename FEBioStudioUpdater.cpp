@@ -48,8 +48,6 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
 		// create the application object
 		QApplication app(argc, argv);
 

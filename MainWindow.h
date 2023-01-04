@@ -1,6 +1,6 @@
 #pragma once
 #include <QWizard>
-#include <QSslerror>
+#include <QSslError>
 
 namespace Ui{
 class CMainWindow;
