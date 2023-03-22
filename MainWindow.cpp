@@ -39,7 +39,7 @@
 
 #ifdef WIN32
 #define FEBIOBINARY "\\febio4.exe"
-#define FBSBINARY "\\FEBioStudio.exe"
+#define FBSBINARY "\\FEBioStudio2.exe"
 #define FBSUPDATERBINARY "\\FEBioStudioUpdater.exe"
 #define MVUTIL "\\mvUtil.exe"
 #elif __APPLE__
@@ -211,6 +211,8 @@ CMainWindow::CMainWindow(bool devChannel, bool updaterUpdateCheck)
 	
 	setWindowTitle("FEBio Studio Updater");
 
+	setWizardStyle(QWizard::ModernStyle);
+
 	setPixmap(QWizard::WatermarkPixmap, QPixmap(":/images/leftSide.png"));
 	setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/leftSide.png"));
 	setPixmap(QWizard::LogoPixmap, QPixmap(":/images/FEBioStudio.png"));
@@ -234,7 +236,7 @@ bool CMainWindow::checkBinaries()
         return false;
     }
 
-    if(!isFileWriteable(QApplication::applicationDirPath() + FEBIOBINARY, "FEBio Studio"))
+    if(!isFileWriteable(QApplication::applicationDirPath() + FEBIOBINARY, "FEBio"))
     {
         return false;
     }
@@ -254,13 +256,13 @@ bool CMainWindow::isFileWriteable(QString filename, QString niceName)
     layout->addWidget(box);
     dlg.setLayout(layout);
 
-    conntect(box, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
-    conntect(box, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+    connect(box, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+    connect(box, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
 
     QFile file(filename);
     while(true)
     {
-        if(file.open(QIODevice::WriteOnly))
+        if(file.open(QIODevice::Append))
         {
             file.close();
             return true;
