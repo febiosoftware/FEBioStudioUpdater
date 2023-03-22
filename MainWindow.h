@@ -29,6 +29,9 @@ private slots:
 	void progress(qint64 bytesReceived, qint64 bytesTotal);
 
 private:
+    bool checkBinaries();
+    bool isFileWriteable(QString filename, QString niceName);
+
 	bool NetworkAccessibleCheck();
 
 	void getFile();

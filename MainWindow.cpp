@@ -38,14 +38,17 @@
 #include <iostream>
 
 #ifdef WIN32
+#define FEBIOBINARY "\\febio4.exe"
 #define FBSBINARY "\\FEBioStudio.exe"
 #define FBSUPDATERBINARY "\\FEBioStudioUpdater.exe"
 #define MVUTIL "\\mvUtil.exe"
 #elif __APPLE__
+#define FEBIOBINARY "/febio4"
 #define FBSBINARY "/FEBioStudio"
 #define FBSUPDATERBINARY "/FEBioStudioUpdater"
 #define MVUTIL "/mvUtil"
 #else
+#define FEBIOBINARY "/febio4"
 #define FBSBINARY "/FEBioStudio"
 #define FBSUPDATERBINARY "/FEBioStudioUpdater"
 #define MVUTIL "/mvUtil"
@@ -223,6 +226,55 @@ CMainWindow::CMainWindow(bool devChannel, bool updaterUpdateCheck)
 	connect(restclient, &QNetworkAccessManager::sslErrors, this, &CMainWindow::sslErrorHandler);
 }
 
+bool CMainWindow::checkBinaries()
+{
+#ifdef WIN32
+    if(!isFileWriteable(QApplication::applicationDirPath() + FBSBINARY, "FEBio Studio"))
+    {
+        return false;
+    }
+
+    if(!isFileWriteable(QApplication::applicationDirPath() + FEBIOBINARY, "FEBio Studio"))
+    {
+        return false;
+    }
+#endif
+
+    return true;
+}
+    
+bool CMainWindow::isFileWriteable(QString filename, QString niceName)
+{
+    QDialog dlg;
+    QVBoxLayout* layout = new QVBoxLayout;
+    layout->addWidget(new QLabel(QString("Cannot write to %1.\n\nIs %2 still running?").arg(filename).arg(niceName)));
+    QDialogButtonBox* box = new QDialogButtonBox;
+    box->addButton("Retry", QDialogButtonBox::AcceptRole);
+    box->addButton(QDialogButtonBox::Cancel);
+    layout->addWidget(box);
+    dlg.setLayout(layout);
+
+    conntect(box, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+    conntect(box, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+
+    QFile file(filename);
+    while(true)
+    {
+        if(file.open(QIODevice::WriteOnly))
+        {
+            file.close();
+            return true;
+        }
+        else
+        {
+            if(!dlg.exec())
+            {
+                return false;
+            }
+        }
+    }
+}
+
 bool CMainWindow::NetworkAccessibleCheck()
 {
 //	return restclient->networkAccessible() == QNetworkAccessManager::Accessible;
@@ -340,6 +392,13 @@ void CMainWindow::updateWidgetReady(bool update, bool terminal)
   		button_layout << QWizard::Stretch << QWizard::FinishButton;
   		setButtonLayout(button_layout);
 	}
+    else
+    {
+        if(!checkBinaries())
+        {
+            QApplication::quit();
+        }
+    }
 
 	ui->infoPage->setComplete(true);
 }
