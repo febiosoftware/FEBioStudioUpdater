@@ -388,4 +388,4 @@ MigrationBackup/
 # VS Code
 .vscode/
 build/
-cmbuild/
+cmbuild*/

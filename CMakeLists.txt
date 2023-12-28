@@ -33,7 +33,7 @@ if(NOT CMAKE_PREFIX_PATH)
             PATH_SUFFIXES "clang_64"
             DOC "${Qt_Version} CMake Directory")
     else()
-        find_path(Qt_TEMP lib/cmake/Qt6/Qt6Config.cmake
+        find_path(Qt_TEMP cmake/Qt6/Qt6Config.cmake
             PATHS ${Qt_Root}/ ${Qt_Root}/* ${Qt_Root}/*/* /opt/Qt/* /opt/Qt*/* /usr/local/Qt/* /usr/local/Qt*/* 
                 $ENV{HOME}/Qt/* $ENV{HOME}/*/Qt6 $ENV{HOME}/*/Qt/* /Qt/* /Qt*/* 
             PATH_SUFFIXES "gcc_64"
@@ -59,17 +59,16 @@ if(WIN32)
     set(FEBIO_DIR "C:/Users/Steve/source/repos/FEBio" CACHE STRING "FEBio path")
 elseif(APPLE)
     add_definitions(-D__APPLE__)
-    #~ set(Qt6_DIR "/home/mherron/Resources/Qt/5.14.1/gcc_64/lib/cmake/Qt5")
-    set(FEBIOSTUDIO_DIR "/Users/mherron/Projects/FEBioStudio" CACHE STRING "FEBioStudio path")
-    set(FEBIO_DIR "/Users/mherron/Projects/FEBio" CACHE STRING "FEBio path")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
 else()
-	add_definitions(-DLINUX)
-    set(FEBIOSTUDIO_DIR "/home/sci/mherron/Projects/FEBioStudio" CACHE STRING "FEBioStudio path")
-    set(FEBIO_DIR "/home/sci/mherron/Projects/FEBio" CACHE STRING "FEBio path")
+    add_definitions(-DLINUX)
     
     set(CMAKE_BUILD_RPATH_USE_LINK_PATH FALSE)
     set(CMAKE_BUILD_RPATH $ORIGIN/../lib/)
 endif()
+
+set(FEBIOSTUDIO_DIR "../")
+set(FEBIO_DIR "../febio4-sdk")
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -81,7 +80,7 @@ endif()
 find_package(Qt6 COMPONENTS Widgets Network REQUIRED)
 
 include_directories(.)
-include_directories(${FEBIOSTUDIO_DIR} ${FEBIO_DIR})
+include_directories(${FEBIOSTUDIO_DIR} ${FEBIO_DIR}/include)
 
 file(GLOB SOURCES "*.cpp")
 
@@ -97,10 +96,23 @@ endif()
 if (WIN32)
     set(XML_LIB ${FEBIO_DIR}/cmbuild22/lib/Release/xml.lib)
     target_link_options(FEBioStudioUpdater PRIVATE "/entry:mainCRTStartup")
-elseif(APPLE)
-    set(XML_LIB ${FEBIO_DIR}/cbuild/Release/lib/libxml.a)
 else()
-    set(XML_LIB ${FEBIO_DIR}/cbuild/Release/lib/libxml.a)
+    set(CMAKE_FIND_DEBUG_MODE TRUE)
+
+    find_library(XML_LIB libxml.a
+      PATHS "${FEBIO_DIR}/lib"
+      NO_DEFAULT_PATH
+      NO_CACHE
+      )
+    message(STATUS "XML_LIB: ${XML_LIB}")
+    set(CMAKE_FIND_DEBUG_MODE FALSE)
+
+    if(NOT XML_LIB)
+      message(FATAL_ERROR "Unable to locate ${XML_LIB}")
+    else()
+      message(STATUS "${XML_LIB}")
+    endif()
+
 endif()
 
 target_link_libraries(FEBioStudioUpdater Qt6::Widgets Qt6::Network ${XML_LIB})
