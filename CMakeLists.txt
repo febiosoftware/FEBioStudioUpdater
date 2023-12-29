@@ -55,8 +55,6 @@ endif()
 
 if(WIN32)
     add_definitions(-DWIN32)
-    set(FEBIOSTUDIO_DIR "C:/Users/Steve/source/repos/FEBioStudio" CACHE STRING "FEBioStudio path")
-    set(FEBIO_DIR "C:/Users/Steve/source/repos/FEBio" CACHE STRING "FEBio path")
 elseif(APPLE)
     add_definitions(-D__APPLE__)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
@@ -94,25 +92,26 @@ if(WIN32)
 endif()
 
 if (WIN32)
-    set(XML_LIB ${FEBIO_DIR}/cmbuild22/lib/Release/xml.lib)
+    set(XML_LIB_NAME xml.lib)
     target_link_options(FEBioStudioUpdater PRIVATE "/entry:mainCRTStartup")
 else()
-    set(CMAKE_FIND_DEBUG_MODE TRUE)
+    set(XML_LIB_NAME libxml.a)
+endif()
 
-    find_library(XML_LIB libxml.a
-      PATHS "${FEBIO_DIR}/lib"
-      NO_DEFAULT_PATH
-      NO_CACHE
-      )
-    message(STATUS "XML_LIB: ${XML_LIB}")
-    set(CMAKE_FIND_DEBUG_MODE FALSE)
+set(CMAKE_FIND_DEBUG_MODE TRUE)
 
-    if(NOT XML_LIB)
-      message(FATAL_ERROR "Unable to locate ${XML_LIB}")
-    else()
-      message(STATUS "${XML_LIB}")
-    endif()
+find_library(XML_LIB ${XML_LIB_NAME}
+  PATHS "${FEBIO_DIR}/lib"
+  NO_DEFAULT_PATH
+  NO_CACHE
+  )
+message(STATUS "XML_LIB: ${XML_LIB}")
+set(CMAKE_FIND_DEBUG_MODE FALSE)
 
+if(NOT XML_LIB)
+  message(FATAL_ERROR "Unable to locate ${XML_LIB}")
+else()
+  message(STATUS "${XML_LIB}")
 endif()
 
 target_link_libraries(FEBioStudioUpdater Qt6::Widgets Qt6::Network ${XML_LIB})
